@@ -32,6 +32,7 @@ class ModelParams(ParamGroup):
     def extract(self, args):
         g = super().extract(args)
         g.source_path = osp.abspath(g.source_path)
+        g.random_init = args.random_init
         return g
 
 
