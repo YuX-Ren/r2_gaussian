@@ -371,8 +371,8 @@ renderCUDA(
 
 			//! We compute mu to consider integration.
 			const float alpha = con_o.w * mu * exp(power);
-			if (alpha < 0.00001f)
-				continue;
+			// if (alpha < 0.00001f)
+			// 	continue;
 		
 			//! Simply add all alphas for X-ray imaging.
 			for (int ch = 0; ch < CHANNELS; ch++)

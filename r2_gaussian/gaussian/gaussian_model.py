@@ -58,8 +58,8 @@ class GaussianModel:
             self.scaling_inverse_activation = torch.log
         self.covariance_activation = build_covariance_from_scaling_rotation
 
-        self.density_activation = torch.nn.Softplus()  # use softplus for [0, +inf]
-        self.density_inverse_activation = inverse_softplus
+        self.density_activation = lambda x: x  # No activation, allows negative values
+        self.density_inverse_activation = lambda x: x  # Identity for inverse as well
 
         self.rotation_activation = torch.nn.functional.normalize
 
@@ -482,14 +482,13 @@ class GaussianModel:
         )
 
         new_xyz = self._xyz[selected_pts_mask]
-        # new_densities = self._density[selected_pts_mask]
-        new_densities = self.density_inverse_activation(
-            self.get_density[selected_pts_mask] * 0.5
-        )
+        # When cloning, we can now directly use half the density without activation
+        new_densities = self.get_density[selected_pts_mask] * 0.5
         new_scaling = self._scaling[selected_pts_mask]
         new_rotation = self._rotation[selected_pts_mask]
         new_max_radii2D = self.max_radii2D[selected_pts_mask]
 
+        # No need for inverse activation since we're using identity
         self._density[selected_pts_mask] = new_densities
 
         self.densification_postfix(
@@ -522,7 +521,7 @@ class GaussianModel:
                 self.densify_and_split(grads, max_grad, densify_scale_threshold)
 
         # Prune gaussians with too small density
-        prune_mask = (self.get_density < min_density).squeeze()
+        prune_mask = (torch.abs(self.get_density) < min_density).squeeze()
         # Prune gaussians outside the bbox
         if bbox is not None:
             xyz = self.get_xyz

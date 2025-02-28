@@ -27,8 +27,8 @@ class InitParams(ParamGroup):
     def __init__(self, parser):
         self.recon_method = "fdk"
         self.n_points = 50000
-        self.density_thresh = 0.05
-        self.density_rescale = 0.15
+        self.density_thresh = 0.005
+        self.density_rescale = 15
         self.random_density_max = 1.0  # Parameters for random mode
         super().__init__(parser, "Initialization Parameters")
 
@@ -63,8 +63,8 @@ def init_pcd(
         )
         vol = recon_volume(projs, angles, copy.deepcopy(geo), recon_method)
         # show_one_volume(vol)
-
-        density_mask = vol > args.density_thresh
+        # use absolute value of volume
+        density_mask = np.abs(vol) > args.density_thresh
         valid_indices = np.argwhere(density_mask)
         offOrigin = np.array(scanner_cfg["offOrigin"])
         dVoxel = np.array(scanner_cfg["dVoxel"])
@@ -166,6 +166,7 @@ if __name__ == "__main__":
     parser.add_argument("--data", type=str, help="Path to data.")
     parser.add_argument("--output", default=None, type=str, help="Path to output.")
     parser.add_argument("--evaluate", default=False, action="store_true", help="Add this flag to evaluate quality (given GT volume, for debug only)")
+    parser.add_argument("--random_init", action="store_true", default=False)
     # fmt: on
 
     args = parser.parse_args()

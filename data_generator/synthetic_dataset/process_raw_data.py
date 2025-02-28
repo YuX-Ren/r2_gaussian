@@ -104,13 +104,13 @@ def process_raw(case_info, target_size):
 def process_tif(case_info, target_size):
     """Process *.tif file."""
     data = tifffile.imread(case_info["raw_path"])
-    data_min = data.min()
-    data_max = data.max()
-    data = (data - data_min) / (data_max - data_min)
+    # data_min = data.min()
+    # data_max = data.max()
+    # data = (data - data_min) / (data_max - data_min)
     data = reshape_vol(
         data, case_info["spacing"], target_size, mode=case_info["reshape"]
     )
-    data = data.clip(0.0, 1.0)
+    # data = data.clip(0.0, 1.0)
     data = data.transpose(case_info["transpose"])
     if case_info["z_invert"]:
         data = data[:, :, ::-1]

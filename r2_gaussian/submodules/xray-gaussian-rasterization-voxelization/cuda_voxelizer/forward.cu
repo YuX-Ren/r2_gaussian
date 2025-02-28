@@ -290,8 +290,8 @@ renderCUDA(
 
 			// float alpha = min(1.0f, opa * exp(power));
 			float alpha = opa * exp(power);
-			if (alpha < 0.000001f)
-				continue;
+			// if (alpha < 0.000001f)
+			// 	continue;
 
 			// Simply add all alphas
 			for (int ch = 0; ch < CHANNELS; ch++)

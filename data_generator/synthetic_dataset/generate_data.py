@@ -57,7 +57,7 @@ def main(args):
             Poisson=scanner_cfg["possion_noise"],
             Gaussian=np.array(scanner_cfg["gaussian_noise"]),
         )  #
-        projs_train[projs_train < 0.0] = 0.0
+        # projs_train[projs_train < 0.0] = 0.0
 
     # Generate testing projections (we don't use them in our work)
     projs_test_angles = (

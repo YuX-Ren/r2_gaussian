@@ -332,8 +332,8 @@ renderCUDA(
 
 			// float alpha = min(1.0f, opa * G);
 			float alpha = opa * G;
-			if (alpha < 0.000001f)
-				continue;
+			// if (alpha < 0.000001f)
+			// 	continue;
 			
 			// Propagate gradients to per-Gaussian colors and keep
 			// gradients w.r.t. alpha (blending factor for a Gaussian/pixel

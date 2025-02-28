@@ -37,8 +37,12 @@ def initialize_random_gaussians(gaussians: GaussianModel,
         size=(n_points, 3)
     )
     
-    # Initial densities (could also be random)
-    densities = np.ones((n_points, 1)) * density_value
+    # Initial densities - can now be negative if allowed
+    densities = np.random.uniform(
+        low=-density_value,
+        high=density_value,
+        size=(n_points, 1)
+    )
     
     # Initialize the Gaussian model
     gaussians.create_from_pcd(xyz, densities, spatial_lr_scale=1.0)
