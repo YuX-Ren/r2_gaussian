@@ -8,17 +8,17 @@ DSO: 5.0  # Distance Source Origin
 
 # Detector parameters
 nDetector: # Number of pixels
-- 512 
-- 512 
+- 256 
+- 256 
 sDetector: # Size of each pixel
 - 2.0
 - 2.0
 
 # Image parameters
 nVoxel: # Number of voxels
-- 256
-- 256
-- 256 
+- 128
+- 128
+- 128
 sVoxel: # size of voxels
 - 2.0
 - 2.0

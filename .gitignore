@@ -11,3 +11,14 @@ volume_raw
 FIPS_raw
 FIPS_processed
 other_scripts
+*.mrc
+*.npy
+*.map
+*.tif
+*.raw
+*.png
+*.txt
+*.log
+*.wandb
+*.json
+cryo_data

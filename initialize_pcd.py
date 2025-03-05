@@ -27,8 +27,8 @@ class InitParams(ParamGroup):
     def __init__(self, parser):
         self.recon_method = "fdk"
         self.n_points = 50000
-        self.density_thresh = 0.005
-        self.density_rescale = 15
+        self.density_thresh = 0.05
+        self.density_rescale = 0.15
         self.random_density_max = 1.0  # Parameters for random mode
         super().__init__(parser, "Initialization Parameters")
 

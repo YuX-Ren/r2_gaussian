@@ -11,7 +11,8 @@ from r2_gaussian.utils.system_utils import searchForMaxIteration
 from r2_gaussian.dataset.dataset_readers import sceneLoadTypeCallbacks
 
 def initialize_random_gaussians(gaussians: GaussianModel, 
-                               scanner_cfg, 
+                               offOrigin, 
+                               sVoxel, 
                                n_points=50000, 
                                density_value=0.1):
     """Initialize Gaussians with random points within the volume bounds.
@@ -23,8 +24,8 @@ def initialize_random_gaussians(gaussians: GaussianModel,
         density_value: Initial density value for all points
     """
     # Get volume bounds from scanner config
-    center = np.array(scanner_cfg["offOrigin"])
-    size = np.array(scanner_cfg["sVoxel"])
+    center = np.array(offOrigin)
+    size = np.array(sVoxel)
     
     # Generate random points within the volume bounds
     min_bound = center - size/2
@@ -50,7 +51,7 @@ def initialize_random_gaussians(gaussians: GaussianModel,
     print(f"Initialized {n_points} random Gaussians within volume bounds")
     return gaussians
 
-def initialize_gaussian(gaussians: GaussianModel, args: ModelParams, loaded_iter=None):
+def initialize_gaussian(gaussians: GaussianModel, args: ModelParams, loaded_iter=None, random_init=False):
     print(args)
     if loaded_iter:
         if loaded_iter == -1:
@@ -63,23 +64,17 @@ def initialize_gaussian(gaussians: GaussianModel, args: ModelParams, loaded_iter
             "iteration_" + str(loaded_iter),
             "point_cloud.pickle",  # Pickle rather than ply
         )
-        assert osp.exists(ply_path), f"Cannot find {ply_path} for loading."
-        gaussians.load_ply(ply_path)
+
         print("Loading trained model at iteration {}".format(loaded_iter))
     else:
-        if args.random_init:
-            if osp.exists(osp.join(args.source_path, "meta_data.json")):
-                scene_info = sceneLoadTypeCallbacks["Blender"](args.source_path, args.eval)
-            elif args.source_path.split(".")[-1] in ["pickle", "pkl"]:
-                scene_info = sceneLoadTypeCallbacks["NAF"](args.source_path, args.eval)
-            else:
-                raise ValueError("Could not recognize scene type!")
-                
+        random = False
+        if random:
             initialize_random_gaussians(
                 gaussians, 
-                scene_info.scanner_cfg,
-                n_points=args.n_random_points, 
-                density_value=args.random_density
+                args['offOrigin'],
+                args['sVoxel'],
+                # n_points=args['n_random_points'], 
+                # density_value=args['random_density']
             )
         else:
             if args.ply_path == "":
@@ -96,7 +91,7 @@ def initialize_gaussian(gaussians: GaussianModel, args: ModelParams, loaded_iter
                     raise ValueError("Could not recognize scene type!")
             else:
                 ply_path = args.ply_path
-
+            # ply_path = '/root/r2_gaussian/data/synthetic_dataset/parallel_ntrain_75_angle_360/cryo_128_0_1_parallel/init_cryo_128_0_1_parallel.npy'
             assert osp.exists(
                 ply_path
             ), f"Cannot find {ply_path} for initialization. Please specify a valid ply_path or generate point cloud with initialize_pcd.py."
